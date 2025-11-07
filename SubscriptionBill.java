@@ -1,29 +1,41 @@
+
+import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class SubscriptionBill {
+
     public static Scanner input = new Scanner(System.in);
 
-    public static double calculateTotalAmount(String accountID, String packagePlan, double totalHours) {
-        double packageACost = 9.95;
-        double packageAExtra = 2.00;
-        
-        double packageBCost = 9.95;
-        double packageBExtra = 2.00;
+    public static void calculateTotalAmount(String accountID, int packagePlan, double totalHours) {
+        String[] packagePlans = {"A", "B", "C"};
+        double[] packagePrices = {9.99, 14.95, 19.95};
+        int[] packageHours = {10, 20, 0};
+        double[] packageAdditional = {2.00, 1.00, 0};
 
-        double packageCCost = 9.95;
-        double packageCExtra = 2.00;
-        
-        double finalPrice = 0;
-        
-        switch (packagePlan) {
-            case "A" -> System.out.println("A");
-            case "B" -> System.out.println("B");
-            case "C" -> System.out.println("B");
-            default -> throw new AssertionError("Package Not Found!");
+        double finalAnswer;
+
+        String plan = packagePlans[packagePlan];
+        double packagePrice = packagePrices[packagePlan];
+        double packageA = packageAdditional[packagePlan];
+        int hours = packageHours[packagePlan];
+
+        System.out.println("Account #:" + accountID);
+        System.out.println("For package " + plan + " charged at " + packagePrice + " a month for " + totalHours + " hours");
+        System.out.println("Total Hours:" + accountID);
+        System.out.println("Amount Due:" + accountID);
+
+        System.out.println("Plan:" + plan);
+        System.out.println("packagePrice:" + packagePrice);
+        System.out.println("packageA:" + packageA);
+        System.out.println("hours: " + hours);
+    
+        if ((hours > 0) && (totalHours > hours)) {
+            finalAnswer = packagePrice + Math.max(0,totalHours - hours) * packageA;
+        } else {
+            finalAnswer = packagePrice;
         }
-        
-        return finalPrice;
+        System.out.println(finalAnswer);
     }
 
     public static double getHoursUsed() {
@@ -40,21 +52,28 @@ public class SubscriptionBill {
         }
     }
 
-    public static String getPackagePlan() {
-        String packagePlan;
+    public static int getPackagePlan() {
+        String answer;
         try {
-            System.out.println("Please Enter Your Package Plan.");
-            packagePlan = input.nextLine();
-            if (!packagePlan.isEmpty()
-                    && ("A".equals(packagePlan) || "B".equals(packagePlan) || "C".equals(packagePlan))) {
-                return packagePlan;
-            } else {
-                throw new InputMismatchException("Invalid Input - Enter A Package Plan (A, B, C)!");
+            System.out.println("Please Enter Package Plan.");
+            answer = input.nextLine();
+            int packagePlan = 0;
+            switch (answer) {
+                case "A" -> {
+                    packagePlan = 0;
+                }
+                case "B" -> {
+                    packagePlan = 1;
+                }
+                case "C" -> {
+                    packagePlan = 2;
+                }
             }
-        } catch (InputMismatchException e) {
-            System.out.println(e.getMessage());
+            return packagePlan;
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid Input - Please Enter A Valid Number.");
+            return -1;
         }
-        return null;
     }
 
     public static String getAccountID() {
@@ -76,8 +95,17 @@ public class SubscriptionBill {
     public static void main(String[] args) {
         // Declare Variables for Input
         String accountID = "";
-        String packagePlan = "";
+        int packagePlan = 0;
         double hoursUsed = 0;
+
+        double packageACost = 9.95;
+        double packageAExtra = 2.00;
+
+        double packageBCost = 9.95;
+        double packageBExtra = 2.00;
+
+        double packageCCost = 9.95;
+        double packageCExtra = 0;
 
         // Declare variables for loop control flow
         int section = 1;
@@ -86,30 +114,30 @@ public class SubscriptionBill {
         // Declare while loop with boolean flag validInput
         while (!validInput) {
             switch (section) {
-                case 1:
+                case 1 -> {
                     accountID = getAccountID();
                     if (accountID != null) {
                         section = 2;
                     }
-                    break;
-                case 2:
+                }
+                case 2 -> {
                     packagePlan = getPackagePlan();
-                    if (packagePlan != null) {
-                        section = 3;
+                    if (packagePlan >= 0) {
+                         section = 3;
                     }
-                    break;
-                case 3:
+                }
+                case 3 -> {
                     hoursUsed = getHoursUsed();
-                      if (hoursUsed >= 0) {
+                    if (hoursUsed >= 0) {
                         section = 4;
                     }
-                    break;
-                case 4:
+                }
+                case 4 -> {
                     calculateTotalAmount(accountID, packagePlan, hoursUsed);
                     validInput = true;
-                    break;
-                default:
-                    break;
+                }
+                default -> {
+                }
             }
         }
         input.close();
