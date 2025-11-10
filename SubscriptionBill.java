@@ -1,5 +1,4 @@
 
-import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -68,10 +67,13 @@ public class SubscriptionBill {
                 case "C" -> {
                     packagePlan = 2;
                 }
+                default -> {
+                    throw new InputMismatchException("Invalid Input - Please Enter A Valid Package Plan.");
+                }
             }
             return packagePlan;
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid Input - Please Enter A Valid Number.");
+        } catch (InputMismatchException e) {
+            System.out.println(e.getMessage());
             return -1;
         }
     }
